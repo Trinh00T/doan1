@@ -7,6 +7,7 @@ from pathlib import Path
 from datetime import date
 from collections import defaultdict
 import json
+import os
 
 # Mo hinh du bao Linear Regression
 from prediction import predict_target
@@ -43,11 +44,13 @@ app.include_router(schedule_router)
 
 
 # 3. CAU HINH CORS
+# Cho phep Frontend tren may va Vercel goi API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173",
+        "https://doan1-pi.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -57,7 +60,9 @@ app.add_middleware(
 
 # 4. DUONG DAN DU LIEU
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = Path(
+    os.getenv("DATA_DIR", str(BASE_DIR / "data"))
+)
 
 
 # 5. DOC FILE JSON
