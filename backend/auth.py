@@ -6,12 +6,33 @@ from datetime import datetime, timedelta, timezone
 
 import bcrypt
 import jwt
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, EmailStr, Field
 
+
+# =====================================
+# 1. CAU HINH DUONG DAN DATABASE
+# =====================================
+
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "users.db"
+
+# Tren may tinh: backend/users.db
+# Tren Render: cau hinh DATABASE_PATH=/var/data/users.db
+DB_PATH = Path(
+    os.getenv(
+        "DATABASE_PATH",
+        str(BASE_DIR / "users.db")
+    )
+)
+
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+
+# =====================================
+# 2. CAU HINH JWT
+# =====================================
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 
@@ -22,18 +43,33 @@ if not SECRET_KEY:
 
 ALGORITHM = "HS256"
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(
+    prefix="/api/auth",
+    tags=["Authentication"]
+)
+
 security = HTTPBearer()
 
 
-# Ket noi SQLite
+# =====================================
+# 3. KET NOI SQLITE
+# =====================================
+
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(
+        DB_PATH,
+        timeout=30
+    )
+
     conn.row_factory = sqlite3.Row
+
     return conn
 
 
-# Tao bang tai khoan
+# =====================================
+# 4. KHOI TAO BANG TAI KHOAN
+# =====================================
+
 def init_db():
     with get_connection() as conn:
         conn.execute("""
@@ -49,23 +85,40 @@ def init_db():
 init_db()
 
 
-# Du lieu dang ky
+# =====================================
+# 5. DU LIEU DANG KY
+# =====================================
+
 class RegisterRequest(BaseModel):
     full_name: str = Field(min_length=2)
     email: EmailStr
     password: str = Field(min_length=8)
 
 
-# Du lieu dang nhap
+# =====================================
+# 6. DU LIEU DANG NHAP
+# =====================================
+
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
 
-# Dang ky
+# =====================================
+# 7. API DANG KY
+# =====================================
+
 @router.post("/register", status_code=201)
 def register(data: RegisterRequest):
+
     email = str(data.email).strip().lower()
+    full_name = data.full_name.strip()
+
+    if len(full_name) < 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Ho ten phai co it nhat 2 ky tu"
+        )
 
     if len(data.password.encode("utf-8")) > 72:
         raise HTTPException(
@@ -87,11 +140,12 @@ def register(data: RegisterRequest):
                 VALUES (?, ?, ?)
                 """,
                 (
-                    data.full_name.strip(),
+                    full_name,
                     email,
                     password_hash
                 )
             )
+
             user_id = cursor.lastrowid
 
     except sqlite3.IntegrityError:
@@ -106,14 +160,22 @@ def register(data: RegisterRequest):
     }
 
 
-# Dang nhap
+# =====================================
+# 8. API DANG NHAP
+# =====================================
+
 @router.post("/login")
 def login(data: LoginRequest):
+
     email = str(data.email).strip().lower()
 
     with get_connection() as conn:
         user = conn.execute(
-            "SELECT * FROM users WHERE email = ?",
+            """
+            SELECT *
+            FROM users
+            WHERE email = ?
+            """,
             (email,)
         ).fetchone()
 
@@ -126,7 +188,10 @@ def login(data: LoginRequest):
             detail="Email hoac mat khau khong dung"
         )
 
-    expire = datetime.now(timezone.utc) + timedelta(hours=2)
+    expire = (
+        datetime.now(timezone.utc)
+        + timedelta(hours=2)
+    )
 
     token = jwt.encode(
         {
@@ -148,10 +213,14 @@ def login(data: LoginRequest):
     }
 
 
-# Kiem tra token
+# =====================================
+# 9. KIEM TRA TOKEN
+# =====================================
+
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
+
     try:
         payload = jwt.decode(
             credentials.credentials,
@@ -161,7 +230,11 @@ def get_current_user(
 
         user_id = int(payload["sub"])
 
-    except (jwt.PyJWTError, ValueError, KeyError):
+    except (
+        jwt.PyJWTError,
+        ValueError,
+        KeyError
+    ):
         raise HTTPException(
             status_code=401,
             detail="Token khong hop le hoac het han"
@@ -169,7 +242,11 @@ def get_current_user(
 
     with get_connection() as conn:
         user = conn.execute(
-            "SELECT id, full_name, email FROM users WHERE id = ?",
+            """
+            SELECT id, full_name, email
+            FROM users
+            WHERE id = ?
+            """,
             (user_id,)
         ).fetchone()
 
@@ -182,7 +259,12 @@ def get_current_user(
     return dict(user)
 
 
-# Lay thong tin tai khoan
+# =====================================
+# 10. API LAY THONG TIN TAI KHOAN
+# =====================================
+
 @router.get("/me")
-def get_me(user=Depends(get_current_user)):
+def get_me(
+    user=Depends(get_current_user)
+):
     return user
