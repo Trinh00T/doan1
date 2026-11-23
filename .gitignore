@@ -1,0 +1,36 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Thong tin bi mat
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Du lieu hoc tap ca nhan
+backend/data/*.json
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# File tam
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,42 @@
+# Python
+backend/.venv/
+backend/venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Database - thong tin tai khoan
+*.db
+*.sqlite
+*.sqlite3
+
+# Thong tin bi mat
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Du lieu ca nhan va nhat ky thuc te
+backend/data/progress_history.json
+backend/data/user_tasks.json
+backend/data/study_time.json
+backend/data/study_resources.json
+backend/data/targets.json
+
+# React
+node_modules/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# He dieu hanh
+.DS_Store
+Thumbs.db
+
+# File tam
+*.log
+*.tmp
