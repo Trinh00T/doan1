@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 
-const API_URL = "http://127.0.0.1:8000/api/resources";
+const API_URL = "https://studyprogress.onrender.com/api/resources";
 
 const emptyForm = {
   resource_name: "",

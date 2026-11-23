@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Clock3, Plus, RefreshCw, Pencil, Trash2, X, Save } from "lucide-react";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://studyprogress.onrender.com";
 const today = () => new Date().toLocaleDateString("en-CA");
 const emptyForm = () => ({ study_date: today(), study_hours: "", description: "" });
 

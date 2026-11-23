@@ -8,7 +8,7 @@ import {
   Clock3
 } from "lucide-react";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://studyprogress.onrender.com";
 
 function AlertsScheduling() {
   const [alerts, setAlerts] = useState([]);

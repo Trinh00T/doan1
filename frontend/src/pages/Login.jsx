@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import "./Auth.css";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://studyprogress.onrender.com";
 
 function Login({ onLogin, onGoRegister }) {
   const [email, setEmail] = useState("");

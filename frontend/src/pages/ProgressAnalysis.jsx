@@ -4,7 +4,7 @@ import {
   CartesianGrid, XAxis, YAxis, Tooltip, Legend,
 } from "recharts";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://studyprogress.onrender.com";
 const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN", { maximumFractionDigits: 2 });
 
 function formatDate(value) {
