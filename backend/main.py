@@ -44,14 +44,14 @@ app.include_router(schedule_router)
 
 
 # 3. CAU HINH CORS
-# Cho phep Frontend tren may va Vercel goi API
+# Ho tro Frontend local tu cong 5173 den 5179
+# Dong thoi ho tro Frontend tren Vercel
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
         "https://doan1-pi.vercel.app"
     ],
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):517[3-9]",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

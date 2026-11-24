@@ -4,7 +4,7 @@ import {
   CartesianGrid, Tooltip, Cell,
 } from "recharts";
 
-const API = "https://studyprogress.onrender.com/api";
+const API = ((import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://studyprogress.onrender.com") + "/api");
 
 const formatNumber = (value) =>
   Number(value || 0).toLocaleString("vi-VN", { maximumFractionDigits: 2 });

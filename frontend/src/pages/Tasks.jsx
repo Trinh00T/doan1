@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, ListTodo, Search, Plus, X, Save, Pencil, Trash2 } from "lucide-react";
 
-const API = "https://studyprogress.onrender.com";
+const API = ((import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://studyprogress.onrender.com") + "");
 const emptyForm = { task_name: "", task_description: "", deadline: "", priority: "Trung binh", status: "Chua bat dau" };
 const priorities = { Thap: "Thấp", "Trung binh": "Trung bình", Cao: "Cao" };
 const statuses = { "Chua bat dau": "Chưa bắt đầu", "Dang thuc hien": "Đang thực hiện", "Hoan thanh": "Hoàn thành" };

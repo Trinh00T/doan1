@@ -32,7 +32,7 @@ import AlertsScheduling from "./pages/AlertsScheduling";
 import Reports from "./pages/Reports";
 import "./App.css";
 
-const API = "https://studyprogress.onrender.com";
+const API = ((import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://studyprogress.onrender.com") + "");
 
 // 6 NHOM CHUC NANG CHINH
 const menu = [

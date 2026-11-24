@@ -18,7 +18,7 @@ import {
   X
 } from "lucide-react";
 
-const API = "https://studyprogress.onrender.com";
+const API = ((import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://studyprogress.onrender.com") + "");
 
 // Lay gia tri theo ten truong trong du lieu
 function getValue(item, keys, fallback = "") {
